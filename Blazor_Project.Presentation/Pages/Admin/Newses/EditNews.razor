@@ -1,0 +1,109 @@
+﻿@page "/edit-news/{NewsId:int}"
+@using Blazor_Project.Application.Interfaces
+@using Microsoft.AspNetCore.Components
+@using Blazor_Project.Application.DTOs
+@using Blazor_Project.Data.Models
+@using Blazor_Project.Presentation.Service.IService
+
+@inject INewsService NewsService
+@inject IFileUploadService FileUploadService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+<div class="single_post">
+    <div class="container-fluid">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="post_content text-center">
+                <div class="card-header">
+                    <h5>ویرایش خبر</h5>
+                </div>
+                <EditForm Model="NewsDto" OnValidSubmit="UpsertNews">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <InputText @bind-Value="NewsDto.Title" class="form-control" placeholder="عنوان خبر" />
+                        <ValidationMessage class="text-danger" style="color:red" For="() => NewsDto.Title" />
+                    </div>
+                    <div class="form-group">
+                        <InputTextArea @bind-Value="NewsDto.ShortDescription" class="form-control" placeholder="توضیحات کوتاه" />
+                        <ValidationMessage class="text-danger" style="color:red" For="() => NewsDto.Title" />
+                    </div>
+                    <div class="form-group">
+                        <InputTextArea @bind-Value="NewsDto.Description" class="form-control" placeholder="توضیحات" />
+                        <ValidationMessage class="text-danger" style="color:red" For="() => NewsDto.Title" />
+                    </div>
+                    <div class="form-group">
+                        <InputFile OnChange="HandleImageUpload"/>
+                    </div>
+                    <div class="form-group">
+                        <InputSelect class="form-control" @bind-Value="NewsDto.NewsCategoryId">
+                            @foreach (var category in NewsCategories)
+                            {
+                                <option value="@category.Id">@category.Title</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">ویرایش خبر </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public int NewsId { get; set; }
+
+    public EditNewsDTO NewsDto { get; set; } = new EditNewsDTO();
+    public List<NewsCategory> NewsCategories { get; set; } = new List<NewsCategory>();
+
+    private async Task UpsertNews()
+    {
+        //if (string.IsNullOrEmpty(NewsDto.ImageName))
+        //{
+        //    await JsRuntime.InvokeVoidAsync("ShowToastr", "error", "لطفا تصویری انتخاب نمایید !");
+        //    return;
+        //}
+
+        await NewsService.EditNews(NewsDto);
+        await JsRuntime.InvokeVoidAsync("ShowToastr", "success", "خبر با موفقیت ویرایش شد !");
+        NavigationManager.NavigateTo("newses");
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            FileInfo fileInfo = new FileInfo(e.File.Name);
+            if (fileInfo.Extension.ToLower() == ".jpg" ||
+                fileInfo.Extension.ToLower() == ".png" ||
+                fileInfo.Extension.ToLower() == ".jpeg")
+            {
+                NewsDto.ImageName = await FileUploadService.UploadFile(e.File);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var news = await NewsService.GetNewsById(NewsId);
+        
+        NewsDto.Id = news.Id;
+        NewsDto.Description = news.Description;
+        NewsDto.ShortDescription = news.ShortDescription;
+        NewsDto.Title = news.Title;
+        NewsDto.Visits = news.Visits;
+        NewsDto.NewsCategoryId = news.NewsCategoryId;
+        NewsDto.ImageName = news.ImageName;
+
+        NewsCategories = await NewsService.GetNewsCategories();
+    }
+}

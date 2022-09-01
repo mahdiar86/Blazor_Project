@@ -1,0 +1,74 @@
+﻿@page "/newses"
+@using Blazor_Project.Application.Interfaces
+@using Blazor_Project.Data.Models
+@inject INewsService NewsService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+<div class="single_post">
+    <div class="container-fluid">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="post_content text-center">
+                <div class="card-header">
+                    <h5>اخبار‌‌:‌</h5>
+                </div>
+                <div class="mt-2">
+                    <NavLink href="create-news">
+                        <button class="btn btn-success">افزودن خبر جدید</button>
+                    </NavLink>
+                </div>
+                <table class="mt-3 table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>شناسه </th>
+                            <th>تصویر</th>
+                            <th>عنوان خبر</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Newses.Any())
+                        {
+                            @foreach (var news in Newses)
+                            {
+                                <tr>
+                                    <td>@news.Id</td>
+                                    <td>
+                                        <img class="thumbnail" width="400" src="/images/@news.ImageName"/>
+                                    </td>
+                                    <td>
+                                        <NavLink href="@($"edit-news/{news.Id}")">
+                                            <button class="btn btn-primary">
+                                                ویرایش
+                                            </button>
+                                        </NavLink>
+                                        <button class="btn btn-danger" @onclick="() => DeleteNews(news.Id)">حذف</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    public List<News> Newses { get; set; } = new List<News>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        Newses = await NewsService.GetLatestNewses(100);
+    }
+
+    private async Task DeleteNews(int id)
+    {
+        await NewsService.DeleteNews(id);
+        await JsRuntime.InvokeVoidAsync("ShowToastr", "error", "خبر مورد نظر با موفقیت حذف شد !");
+
+        Newses = await NewsService.GetLatestNewses(100);
+    }
+}

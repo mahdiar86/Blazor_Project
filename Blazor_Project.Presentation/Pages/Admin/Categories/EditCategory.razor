@@ -1,0 +1,51 @@
+﻿@page "/edit-category/{Id:int}"
+@using Blazor_Project.Application.DTOs
+@using Blazor_Project.Application.Interfaces
+@inject INewsService NewsService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+<div class="single_post">
+    <div class="container-fluid">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="post_content text-center">
+                <div class="card-header">
+                    <h5>ویرایش دسته بندی </h5>
+                </div>
+                <EditForm Model="EditCategoryDto" OnValidSubmit="UpsertCategory">
+
+                    <div class="form-group">
+                        <InputText @bind-Value="EditCategoryDto.Title" class="form-control" placeholder="متن دسته بندی"/>
+                    </div>
+                    <div class="form-group">
+                        <InputNumber @bind-Value="EditCategoryDto.Id" class="form-control" disabled/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">ویرایش</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public int Id { get; set; }
+    
+    public EditCategoryDTO EditCategoryDto { get; set; } = new EditCategoryDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+        EditCategoryDto = await NewsService.GetCategoryById(Id);
+    }
+
+    private async Task UpsertCategory()
+    {
+        await NewsService.EditCategory(EditCategoryDto);
+        await JsRuntime.InvokeVoidAsync("ShowToastr", "success", "دسته بندی مورد نظر با موفقیت ویرایش شد");
+        NavigationManager.NavigateTo("categories");
+    }
+}

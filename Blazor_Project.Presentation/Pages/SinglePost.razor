@@ -1,0 +1,57 @@
+﻿@page "/single-post"
+@using Blazor_Project.Application.Interfaces
+@using Blazor_Project.Data.Models
+@inject NavigationManager NavigationManager
+@inject INewsService NewsService
+@inject IJSRuntime JsRuntime
+@if (News != null)
+{
+    <div class="single_post">
+        <div class="container-fluid">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="post_img">
+                            <img src="/images/@News.ImageName" alt="">
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="post_content">
+
+                    <h4>
+                        @News.Title
+                    </h4>
+                    <p>@News.ShortDescription</p>
+                    <p>@News.Description</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@code
+{
+    public News News { get; set; }
+
+    public string Title { get; set; }
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var absoluteUri = new Uri(NavigationManager.Uri);
+        var queryParam = System.Web.HttpUtility.ParseQueryString(absoluteUri.Query);
+
+        Title = queryParam["title"];
+        Id = int.Parse(queryParam["Id"]);
+
+        News = await NewsService.GetNewsById(Id);
+        if (News == null)
+        {
+            await JsRuntime.InvokeVoidAsync("ShowToastr", "error", "خطایی رخ داده است !");
+            NavigationManager.NavigateTo("");
+        }
+    }
+}

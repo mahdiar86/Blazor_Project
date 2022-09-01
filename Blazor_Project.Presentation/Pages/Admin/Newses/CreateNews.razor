@@ -1,0 +1,99 @@
+﻿@page "/create-news"
+@using Blazor_Project.Application.Interfaces
+@using Microsoft.AspNetCore.Components
+@using Blazor_Project.Application.DTOs
+@using Blazor_Project.Data.Models
+@using Blazor_Project.Presentation.Service.IService
+
+@inject INewsService NewsService
+@inject IFileUploadService FileUploadService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+<div class="single_post">
+    <div class="container-fluid">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="post_content text-center">
+                <div class="card-header">
+                    <h5>افزودن خبر جدید</h5>
+                </div>
+                <EditForm Model="NewsDto" OnValidSubmit="AddNews">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <InputText @bind-Value="NewsDto.Title" class="form-control" placeholder="عنوان خبر" />
+                        <ValidationMessage class="text-danger" style="color:red" For="() => NewsDto.Title" />
+                    </div>
+                    <div class="form-group">
+                        <InputTextArea @bind-Value="NewsDto.ShortDescription" class="form-control" placeholder="توضیحات کوتاه" />
+                        <ValidationMessage class="text-danger" style="color:red" For="() => NewsDto.ShortDescription" />
+                    </div>
+                    <div class="form-group">
+                        <InputTextArea @bind-Value="NewsDto.Description" class="form-control" placeholder="توضیحات" />
+                        <ValidationMessage class="text-danger" style="color:red" For="() => NewsDto.Description" />
+                    </div>
+                    <div class="form-group">
+                        <InputFile OnChange="HandleImageUpload"/>
+                    </div>
+                    <div class="form-group">
+                        <InputSelect class="form-control" @bind-Value="NewsDto.NewsCategoryId" >
+                            @foreach (var category in NewsCategories)
+                            {
+                                <option value="@category.Id">@category.Title</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">افزودن خبر جدید</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    public NewsDTO NewsDto { get; set; } = new NewsDTO();
+    public List<NewsCategory> NewsCategories { get; set; } = new List<NewsCategory>();
+
+    private async Task AddNews()
+    {
+        NewsDto.Visits = 0;
+
+        if (string.IsNullOrEmpty(NewsDto.ImageName))
+        {
+            await JsRuntime.InvokeVoidAsync("ShowToastr", "error", "لطفا تصویری انتخاب نمایید !");
+            return;
+        }
+
+        await NewsService.AddNews(NewsDto);
+        await JsRuntime.InvokeVoidAsync("ShowToastr", "success", "خبر با موفقیت درج شد !");
+        NavigationManager.NavigateTo("newses");
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            FileInfo fileInfo = new FileInfo(e.File.Name);
+            if (fileInfo.Extension.ToLower() == ".jpg" ||
+                fileInfo.Extension.ToLower() == ".png" ||
+                fileInfo.Extension.ToLower() == ".jpeg")
+            {
+                NewsDto.ImageName = await FileUploadService.UploadFile(e.File);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        NewsCategories = await NewsService.GetNewsCategories();
+        NewsDto.NewsCategoryId = NewsCategories.FirstOrDefault().Id;
+    }
+}

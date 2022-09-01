@@ -1,0 +1,21 @@
+﻿@using Blazor_Project.Data.Models
+<div class="latest-posts">
+    <div class="container-fluid">
+        <div class="blog-title-span">
+            <span class="title">آخرین اخبار</span>
+        </div>
+        @if (NewsList.Any())
+        {
+            @foreach (var news in NewsList)
+            {
+                <NewsBox News="news"/>
+            }
+        }
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public List<News> NewsList { get; set; }
+}

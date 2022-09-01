@@ -1,0 +1,29 @@
+﻿@using Blazor_Project.Data.Models
+
+<div class="col-md-3">
+    <div class="post-box">
+        <NavLink href="@($"single-post?id={@News.Id}&title={@News.Title}")">
+            <figure>
+                <img src="/images/@News.ImageName" alt="">
+                <figcaption class="meta-fig">
+                    <span><i class="fa fa-clock-o"></i> @News.CreateDate</span>&nbsp;
+                    <span><i class="fa fa-comment-o"></i> 12</span>
+                </figcaption>
+            </figure>
+            <div class="text-p">
+                <h5>@News.Title</h5>
+                <p>
+                    @News.ShortDescription
+                </p>
+                <div class="text-rigt">
+                    <NavLink href="@($"single-post?id={@News.Id}&title={@News.Title}")">ادامه</NavLink>
+                </div>
+            </div>
+        </NavLink>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public News News { get; set; }
+}

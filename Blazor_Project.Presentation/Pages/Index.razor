@@ -1,0 +1,28 @@
+﻿@page "/"
+@using Blazor_Project.Application.Interfaces
+@using Blazor_Project.Data.Models
+@inject IJSRuntime JsRuntime
+@inject INewsService NewsService
+
+<PageTitle>Index</PageTitle>
+
+<div class="clear-fix"></div>
+<div class="main-content">
+    <div class="clear-fix"></div>
+    <LastNews NewsList="@NewsList" />
+</div>
+
+@code
+{
+    public List<News> NewsList { get; set; } = new List<News>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("DOMInitialized");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        NewsList = await NewsService.GetLatestNewses(16);
+    }
+}

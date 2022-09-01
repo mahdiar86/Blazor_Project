@@ -1,0 +1,115 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@namespace Blazor_Project.Presentation.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+    @*Template Links : *@
+    <link rel="stylesheet" href="/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/owl.carousel.css">
+    <link rel="stylesheet" href="/assets/css/owl.theme.default.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+    <link href="Blazor_Project.Presentation.styles.css" rel="stylesheet" />
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+<body>
+
+    @RenderBody()
+
+    <div class="clear-fix"></div>
+    <div class="footer">
+        <div class="container-fluid">
+            <div class="col-md-5">
+                <div class="footer-box">
+                    <span class="title">مجله seo90</span>
+                    <p>
+                        متن ساختگی با تولید سادگی نامفهوم تولید سادگی از صنعت متن ساختگی با تولید سادگی نامفهوم تولید
+                        سادگی از صنعت متن ساختگی با تولید سادگی نامفهوم تولید سادگی از صنعت متن ساختگی با تولید سادگی از
+                        صنعت متن ساختگی با تولید سادگی نامفهوم تولید سادگی از صنعت متن ساختگی با تولید سادگی نامفهوم
+                        تولید سادگی از صنعت متن ساختگی بام تولید سادگی از صنعت متن ساختگی با تولید سادگی نامفهوم تولید
+                        سادگی از صنعت متن ساختگی با تولید سادگی نامفهوم تولید سادگی از صنعت متن سادگی نامفهوم تولید
+                        سادگی از صنعت
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="footer-box">
+                    <span class="title">دسترسی سریع</span>
+                    <ul>
+                        <li><a href="#">موضوعی</a></li>
+                        <li><a href="#">قوانین</a></li>
+                        <li><a href="#">نشریات</a></li>
+                        <li><a href="#">موضوعی</a></li>
+                        <li><a href="#">خبرنامه</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="footer-box">
+                    <span class="title">موضوعی</span>
+                    <ul>
+                        <li><a href="#">موضوعی</a></li>
+                        <li><a href="#">قوانین</a></li>
+                        <li><a href="#">نشریات</a></li>
+                        <li><a href="#">موضوعی</a></li>
+                        <li><a href="#">خبرنامه</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="footer-box contact-box">
+                    <span class="title">تماس با ما</span>
+                    <p><i class="fa fa-phone"></i> 09028468446</p>
+                    <p><i class="fa fa-phone"></i> 09336636892</p>
+                    <p><i class="fa fa-envelope-o"></i> info@seo90.ir</p>
+                    <p><i class="fa fa-map-marker"></i> تبریز </p>
+                </div>
+            </div>
+            <div class="clear-fix"></div>
+        </div>
+    </div>
+    <div class="end-wrapper">
+        <div class="container-fluid">
+            <div class="col-md-6">
+                <div class="copy-r">
+                    <p>&copy; تمامی حقوق متعلق به سئو 90 می باشد</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="creator text-left">
+                    <p>طراحی سایت ، سئو 90</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg"></div>
+
+
+
+    @*        <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+        </div>*@
+
+    <script src="/assets/js/jquery.js"></script>
+    <script src="/assets/js/bootstrap.js"></script>
+    <script src="/assets/js/owl.carousel.min.js"></script>
+    <script src="/assets/js/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+﻿@page "/categories"
+@using Blazor_Project.Application.Interfaces
+@using Blazor_Project.Data.Models
+@inject INewsService NewsService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+<div class="single_post">
+    <div class="container-fluid">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="post_content text-center">
+                <div class="card-header">
+                    <h5>دسته بندی ها : </h5>
+                </div>
+                <div class="mt-2">
+                    <NavLink href="create-category">
+                        <button class="btn btn-success">افزودن دسته بندی جدید</button>
+                    </NavLink>
+                </div>
+                <table class="mt-3 table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>شناسه </th>
+                            <th>نام دسته بندی</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (NewsCategories.Any())
+                        {
+                            @foreach (var category in NewsCategories)
+                            {
+                                <tr>
+                                    <td>@category.Id</td>
+                                    <td>@category.Title</td>
+                                    <td>
+                                        <NavLink href="@($"edit-category/{category.Id}")">
+                                            <button class="btn btn-primary">
+                                                ویرایش
+                                            </button>
+                                        </NavLink>
+                                        <button class="btn btn-danger" @onclick="() => DeleteCategory(category.Id)">حذف</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    public List<NewsCategory> NewsCategories { get; set; } = new List<NewsCategory>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        NewsCategories = await NewsService.GetNewsCategories();
+    }
+
+    private async Task DeleteCategory(int id)
+    {
+        await NewsService.DeleteCategory(id);
+        NewsCategories = await NewsService.GetNewsCategories();
+
+        await JsRuntime.InvokeVoidAsync("ShowToastrDeleteCategory");
+    }
+}
